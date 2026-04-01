@@ -56,8 +56,14 @@ Si es ingreso, tipo="ingreso". Si no podés interpretar, responde: {"error":"no 
     })
   });
   const data = await res.json();
+  console.log('API response:', JSON.stringify(data));
+  if (!data.content || !data.content[0]) {
+    console.error('API error:', JSON.stringify(data));
+    throw new Error('API sin respuesta válida');
+  }
   const content = data.content[0].text.trim();
-  return JSON.parse(content);
+  const cleaned = content.replace(/```json|```/g, '').trim();
+  return JSON.parse(cleaned);
 }
 
 function getResumen(month, year) {
